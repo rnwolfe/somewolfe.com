@@ -5,20 +5,22 @@ draft: false
 title: Setting up an iPerf3 Server on a Raspberry Pi
 type: post
 url: /2018/01/23/setting-up-an-iperf3-server-on-a-raspberry-pi/
+featuredImage: /images/circuit-board.jpeg
 categories:
-- How To
+  - How To
 tags:
-- iperf
-- iperf3
-- networking
-- raspberry pi
-- rpi
-- speed tests
+  - iperf
+  - iperf3
+  - networking
+  - raspberry pi
+  - rpi
+  - speed tests
 ---
 
 I was recently battling for server time when doing to internet-based performance testing against one of the [publicly listed iperf3 servers](https://iperf.fr/iperf-servers.php). Unfortunately, iperf3 only supports one test at a time. This makes sense in order to provide full resources to an individual test for reliable results. In any case, I didn't want to wait when I'm smack in the middle of some heart throbbing troubleshooting. So, I decided to set my own up from my home and let internet traffic in to use it.
 
 #### Updating the Raspberry Pi
+
 First things first, I had barely touched my RPi in a while, so I needed to update Raspbian to the most recent distro -- Pixel. This was easy enough, though time consuming. The RPi package servers apparently don't download all that quickly. It took around a couple of hours all in all. [This is a straightforward guide for it](https://www.cnet.com/how-to/update-your-raspberry-pi-to-raspbian-pixel-for-fancy-new-features/). But, it essentially comes down to:
 
     sudo apt-get update
@@ -31,6 +33,7 @@ The article also suggests these for some beautification and common use packages:
     sudo apt-get install -y python-sense-emu-doc realvnc-vnc-viewer
 
 #### Install iperf3
+
 Next, let's get to iperf3. This is pretty simple to install, as most linux packages are.
 
     sudo apt-get update
@@ -52,11 +55,13 @@ Since this file could have been customized on your RPi already, it could look li
     561 ? 00:00:00 iperf3
 
 #### Network Changes
+
 If you are running behind a firewall, or ISP-provided modem. You will have to setup some NATs and security policy to address the needed iperf flows. In my case, it was inbound TCP/5201 and UDP/5201; however, you can customize these ports if needed. It would require some additional flags to be specified on the server and client to change the default port.
 
 The only thing that may be non-standard is UDP flows coming out from the iperf server after a client initiates a UDP test. The server seems to send a separate UDP flow on some ephemeral ports. This seems similar to the behavior of active mode FTP, but the firewall doesn't inspect and compensate for it. So, you may need to rules to allow the outbound UDP flows separately from the rest. For what it's worth, I'm using a Palo Alto Networks firewall and it doesn't seem to match the iperf App-ID on the initial outbound UDP flow, but it does for everything else. So, consider that if you're having issues with your App-based rule approach.
 
 #### Test
+
 Of course, final step is to test the thing out. So, get iperf3 on a client. This can be Windows, macOS, Linux, etc. Distros are [available here](https://iperf.fr/iperf-download.php) for all OS types.
 
 After that, you'll want to run the following command to test it out using TCP. This example is on Windows.
@@ -107,9 +112,11 @@ Add a flag for UDP, and another to set target bandwidth over 1Mbps which is defa
     iperf Done.
 
 #### Customization
+
 I recommend checking out the [iperf documentation](https://iperf.fr/iperf-doc.php) for customization options. Additionally, it shouldn't be too hard to cater this any other Linux distro. Just tweak the package installation and startup config as needed per your distro flavor.
 
 #### Issues?
+
 Check out [open issues](https://github.com/esnet/iperf/issues) on the [Github project](https://github.com/esnet/iperf) or do some google-fu if you run into any problems. Also, make sure your network/security is configured to supported the needed flows.
 
 I ran into one problem with UDP testing that came down to having multiple NICs available on the pi. In my case, it was the eth0 and wlan0 interfaces. I originally had requests coming into the wlan0 interface (whoops) and the outgoing UDP flow would go out of eth0 interface. This seemed to break the test in its own right, but would also have implications on firewall policy and NAT configurations if you're behind a firewall.

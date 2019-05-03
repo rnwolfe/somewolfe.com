@@ -5,27 +5,28 @@ draft: false
 title: EAP-TLS with a Broken Private Key
 type: post
 url: /2018/01/24/eap-tls-with-a-broken-private-key/
+featuredImage: /images/broken-lock.jpeg
 categories:
-- Cisco ISE
-- Troubleshooting
+  - Cisco ISE
+  - Troubleshooting
 tags:
-- 802.1X
-- aaa
-- AnyConnect
-- certificates
-- cisco
-- Cisco ISE
-- EAP
-- eap-tls
-- error
-- ise
-- native
-- radius
-- supplicant
-- troubleshooting
-- windows
-- windows 10
-- windows 7
+  - 802.1X
+  - aaa
+  - AnyConnect
+  - certificates
+  - cisco
+  - Cisco ISE
+  - EAP
+  - eap-tls
+  - error
+  - ise
+  - native
+  - radius
+  - supplicant
+  - troubleshooting
+  - windows
+  - windows 10
+  - windows 7
 ---
 
 When going through a standard EAP-TLS deployment recently, a seemingly new problem reared its head. We had tested it out and validated EAP-TLS on a couple of laptops using the Microsoft Native Supplicant. All of the ISE policies were good to go, and everything was working as expected.
@@ -33,6 +34,7 @@ When going through a standard EAP-TLS deployment recently, a seemingly new probl
 Then came along a new laptop. This one had other plans. We plug it in and get to authenticatin'.
 
 #### Troubleshooting
+
 Well, it didn't seem to want to send many 802.1X requests, and the port kept falling back to MAB authentication. We validated the client's native supplicant configuration to ensure that the GPO got everything correct. All seemed to be in good order. We couldn't modify any of the administrator-level settings at this point, so we decided to move on instead of play with some of the settings.
 
 We disabled MAB to see the problem more clearly. Most of the requests were seen on ISE using the host/anonymous identity. This clued us in a bit to the issue since that identity is the default unprotected identity string for EAP-TLS. Something was happening prior to gleaning the actual identity from the machine's certificate.
@@ -66,6 +68,7 @@ Back to the event viewer, it is. Cisco AnyConnect has some logs it adds to the e
 What dreaded words -- Internal Error. This didn't really tell us what exactly was happening. But, something was apparently going wrong loading the certificate's private key. Could we have finally found the issue?!
 
 #### Resolution
+
 We decided to delete the machine's certificate and re-issue it to test this out. After rustling back the system administrator, we were able to get it removed and a gpupdate / reboot completed. New certificate was enrolled by the client. The client was now successfully authenticating!
 
 The failure was terribly non-graceful to say the least. It didn't give any idea what was actually going on. You would think that Windows handling a certificate with a private key that is somehow inaccessible -- corrupt, missing, who knows -- would throw some sort of error worth investigating. Or, at least, give you a red "X" over the certificate in the store.

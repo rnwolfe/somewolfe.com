@@ -6,23 +6,25 @@ title: Failed Machine Authentication with AnyConnect NAM on Windows 8+
 type: post
 url: /2017/08/28/failed-machine-auth-w-anyconnect-nam-on-windows-8-windows-10/
 categories:
-- Cisco ISE
-- Troubleshooting
+  - Cisco ISE
+  - Troubleshooting
 tags:
-- AnyConnect
-- authentication
-- Cisco ISE
-- eap chaining
-- eap-fast
-- failed
-- machine
-- nam
-- peap
-- windows 10
-- windows 8
+  - AnyConnect
+  - authentication
+  - Cisco ISE
+  - eap chaining
+  - eap-fast
+  - failed
+  - machine
+  - nam
+  - peap
+  - windows 10
+  - windows 8
 ---
 
-Starting with Windows 8, Microsoft changed a default security setting that only allows third party software to access the machine's domain password in an **encrypted** format. This results in a third party supplicant sending an encrypted password string to the domain that then compares it against an unencrypted password string. The authentication then fails with the error "Machine authentication against Active Directory failed due to wrong password." If you look in the authentication steps, you will see the `24344 RPC Logon request failed - STATUS_WRONG_PASSWORD, ERROR_INVALID_PASSWORD,pclthp10156.domain.com` message. This _traditionally_ indicates that the machine account has expired, or the machine password has otherwise fallen out of synchronization with the domain. It could be easily be fixed by rejoining the machine to the domain.
+Starting with Windows 8, Microsoft changed a default security setting that only allows third party software to access the machine's domain password in an **encrypted** format. This results in a third party supplicant sending an encrypted password string to the domain that then compares it against an unencrypted password string. The authentication then fails with the error "Machine authentication against Active Directory failed due to wrong password."
+
+If you look in the authentication steps, you will see the `24344 RPC Logon request failed - STATUS_WRONG_PASSWORD, ERROR_INVALID_PASSWORD,pclthp10156.domain.com` message. This _traditionally_ indicates that the machine account has expired, or the machine password has otherwise fallen out of synchronization with the domain. It could be easily be fixed by rejoining the machine to the domain.
 
 In this case, however, it is due to the fact that ISE sends the provided password string to the domain unchanged, and when the domain compares the encrypted password string to the its copy of the password that is unencrypted, it does not match up. The string you provided does not match up with the string I have? That's an invalid password! Well, that may technically be true, but it's also misleading.
 

@@ -6,17 +6,17 @@ title: Oh, you wanted to save that NAT?
 type: post
 url: /2017/09/14/oh-you-wanted-to-save-that-nat/
 categories:
-- Troubleshooting
+  - Troubleshooting
 tags:
-- asa
-- cisco
-- firepower management center
-- firepower threat defense
-- fmc
-- ftd
-- gui
-- nat policy
-- ngfw
+  - asa
+  - cisco
+  - firepower management center
+  - firepower threat defense
+  - fmc
+  - ftd
+  - gui
+  - nat policy
+  - ngfw
 ---
 
 I recently stumbled across an "undocumented feature" on the Cisco Firepower Threat Defense managed by Firepower Management Center (FMC) that caused quite the frustration. When entering certain parts of the FMC, the "Save" and "Cancel" buttons won't show up in the top right corner. The downside of this, of course, is that I can't save whatever I was working on.
@@ -25,7 +25,6 @@ The most consistent occurrence of this was the NAT Policy. When managing the NAT
 
 You can see the area I'm talking about below enclosed in red:
 
-[![NAT Policy Buttons](https://www.somewolfe.com/wp-content/uploads/2017/09/NAT-Policy-Save-Buttons-1024x305.png)
-](https://www.somewolfe.com/wp-content/uploads/2017/09/NAT-Policy-Save-Buttons.png)
+![NAT Policy Buttons](/images/NAT-Policy-Save-Buttons.png)
 
-I, personally, saw this in 6.2.1 and 6.2.2. I've also found [ this bug ](https://bst.cloudapps.cisco.com/bugsearch/bug/CSCvd78875/?referring_site=bugquickviewredir) which suggests it was present on same pages of 6.1.0, as well. I've also seen some Cisco presentations recently that call this out as something to be aware of. So, they are aware, but it is not yet fixed. Unfortunately, I am not sure when it will be fixed. Hopefully soon!
+I, personally, saw this in 6.2.1 and 6.2.2. I've also found [this bug](https://bst.cloudapps.cisco.com/bugsearch/bug/CSCvd78875/?referring_site=bugquickviewredir) which suggests it was present on same pages of 6.1.0, as well. I've also seen some Cisco presentations recently that call this out as something to be aware of. So, they are aware, but it is not yet fixed. Unfortunately, I am not sure when it will be fixed. Hopefully soon!

@@ -6,16 +6,16 @@ title: VMware NSX Distributed Firewall (DFW) Viewer
 type: post
 url: /2017/01/30/vmware-nsx-distributed-firewall-dfw-viewer/
 categories:
-- Development
-- VMware NSX
+  - Development
+  - VMware NSX
 tags:
-- app
-- dfw
-- distributed firewall
-- github
-- nsx
-- nsx-dfw-viewer
-- vmware
+  - app
+  - dfw
+  - distributed firewall
+  - github
+  - nsx
+  - nsx-dfw-viewer
+  - vmware
 ---
 
 I've spoken to a few people who use VMWare NSX with the Distributed Firewall (DFW). Most of them, myself included, had some gripes about the NSX interface. While it's web-driven interface is an improvement on many firewall managers, it left something to be desired. At many points in its use, it's easy to find yourself falling deep down a menu-clicking hole while trying to check the contents of a security group, or modify some object that you're using in the policy. And, of course, it all takes time to load, navigate, and, ultimately, end up in the right place.
@@ -24,7 +24,7 @@ For some reason, this just isn't as readily accessible as one would hope. In gen
 
 I, quite creatively, called it the [NSX DFW Viewer](https://github.com/rnwolfe/nsx-dfw-viewer). Okay, maybe it's not all that creative. However, it's a responsive web application that allows for viewing the DFW policy, and performing filtering using a simple search field. The GitHub repository has some good information provided on it to get you started.
 
-{{< figure src="https://www.somewolfe.com/wp-content/uploads/2017/01/img_0003.png" title="NSX DFW Viewer Web App">}}
+{{< smallimg src="/images/nsx-viewer-snapshot.png" alt="NSX DFW Viewer Web App">}}
 
 Ultimately, however, you just put the repository on a web server running PHP and you're off to the races. The only thing you need to update is the `$nsx_host` variable in the `ajax/init.php` file to reflect your NSX Manager's IP address. After that, you will be asked for credentials, on a per-session basis, when you load the page. This can be seen below, along with a couple of attempts to provide unauthorized credentials.
 

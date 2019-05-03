@@ -6,64 +6,51 @@ title: CAC Based Remote Access VPN on the ASA
 type: post
 url: /2016/08/21/cac-based-remote-access-vpn-on-the-asa/
 categories:
-- Tech
+  - Tech
 tags:
-- asa
-- cac
-- certificate
-- configure
-- how to
-- lua
-- piv
-- smartcard
-- vpn
+  - asa
+  - cac
+  - certificate
+  - configure
+  - how to
+  - lua
+  - piv
+  - smartcard
+  - vpn
 ---
 
 ## Introduction
-
 
 In general, using CACs (or smartcards, PIV cards, etc.) as the authentication mechanism is pretty straightforward. The certificate is used for authentication, and, if desired, authorization can then be performed using a value in the certificate. The ASA essentially pulls a username from a field to use for a lookup against a backend server, e.g. LDAP or RADIUS.
 
 I'm not going to cover the configuration and setup of the initial VPN group policies, tunnel groups, etc. This is simply going to review authorizing clients based on the username in the certificate using a couple different methods to grab the username. The backend authentication server configuration will not be covered. In this example, LDAP is being used directly as backend source.
 
-
 ## Selecting the Username from a Certificate Field
-
 
 In most cases, the ASA can extract the username from the certificate with ease. The following cases will require a straightforward configuration:
 
+- The value of the field is identical to the value in the backend server
 
-
-* The value of the field is identical to the value in the backend server
-
-* This is the most common solution, as the User Principal Name (UPN) generally provides the same value as the UPN assigned value in the backend server when the CAC certificate is issued.
-
+- This is the most common solution, as the User Principal Name (UPN) generally provides the same value as the UPN assigned value in the backend server when the CAC certificate is issued.
 
 * The needed value is easily identifiable in the certificate field using pattern matching, e.g. the only 10 digits in a field, or the 10th through the 15th characters.
 
 These scenarios account for the most common, and simplest, configuration scenarios.
 
-
 ### How to Configure
-
 
 These simple scenarios can be configured right from the ASDM GUI. This can not actually be configured from the CLI. On ASDM, navigate to **Remote Access VPN > AnyConnect Connection Profile > [vpn-profile] > Advanced > Authentication > “Use script to select username” > Add**. In this prompt, you can select which field to use, as well as some filtering options, if applicable.
 
-![](https://somewolfe.files.wordpress.com/2016/08/use-script-upn.png)
-
-
+{{< smallimg src="/images/cac-vpn-use-script-upn.png" width="70%" >}}
 
 ### Under the Hood
 
-
 So, under the hood, when selecting which value to select for the username, the ASA is actually creating a script for you. This is stored on the **disk0:/** partition in a file called **username_from_cert.xml**. The scripting is done using a language called [Lua](http://www.lua.org/); however, the ASA uses some local functions that aren't exposed to the administrator to perform the specified actions in the ASDM. These can be seen by examining the created script when specifying different parameters.
-
 
 #### Example 1
 
-
 Settings:
-![](https://somewolfe.files.wordpress.com/2016/08/use-script-upn-1.png)
+{{< smallimg src="/images/cac-vpn-use-script-upn-1.png" width="70%" >}}
 
 Resulting Code:
 
@@ -79,12 +66,10 @@ Resulting Code:
         </Function>
     </TunnelGroupData>
 
-
-
-
 #### Example 2
+
 Settings:
-![](https://somewolfe.files.wordpress.com/2016/08/use-script-upn-filtering.png?w=482)
+{{< smallimg src="/images/cac-vpn-use-script-upn-filtering.png" width="70%" >}}
 
 Resulting Code:
 
@@ -101,13 +86,12 @@ Resulting Code:
         </Function>
     </TunnelGroupData>
 
-
-
-
 ## Less Common Scenarios
+
 In some less common scenarios, the use of the script can become challenging. The only scenario I came across requiring a custom script is outlined below.
 
 ### Appending a Suffix to a Field's String
+
 The use case for this was a customer who's CACs had a null value for the UPN field; however, needed the EDIPI value that is normally stored there to perform the LDAP lookup. To make things more complicated, the UPN field should have been in a format similar to 0123456789@domain.com. Since the UPN was blank, we ended up grabbing the EDIPI from the common name (CN) value which was mixed up with the user's name full name and lacked the suffix we needed. So, we matched the only continuous string of digits and then appended our domain on the end of it.
 
 The LUA scripting language actually uses its own implementation of pattern matching as opposed to run of the mill regular expressions. This created quite the challenge. In addition, scripts that were working successfully on my machine would throw errors when attempting to use them on the ASA with the built in variable referencing the cert field (cert.subject.cn in this case). In the end, we ended up using the pre-existing Cisco function to match the string of digits and appending ("..") a string to the end of it.
@@ -115,6 +99,7 @@ The LUA scripting language actually uses its own implementation of pattern match
     return (CSCO_CertificateToUser(cert.subject.cn, "%d+")).."@test.somewolfe.com"
 
 ### Debugging Custom Scripts
+
 When using custom scripts, often times error are thrown that are related to the script not successfully running. This doesn't require any level of debugging, but generates a warning (4) syslog message as seen below:
 
     %ASA-7-717025: Validating certificate chain containing 1 certificate(s).

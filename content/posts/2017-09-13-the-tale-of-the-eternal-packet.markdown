@@ -5,14 +5,15 @@ draft: false
 title: The Tale of the Eternal Packet
 type: post
 url: /2017/09/13/the-tale-of-the-eternal-packet/
+featuredImage: /images/VPN-Enclave-no-route-text.png
 categories:
-- Troubleshooting
+  - Troubleshooting
 tags:
-- asa
-- cisco
-- firewall
-- routing loop
-- vpn
+  - asa
+  - cisco
+  - firewall
+  - routing loop
+  - vpn
 ---
 
 All of us went through that early on network training and heard about loops and how they can cripple a network. Depending on when you got your start in networking, you were then told that you're not likely to see those types of problems due to Spanning Tree or other network improvements since back in the day. Well, every once in a while, if you try really hard, you can still come across a good ole loop to give you a run for your money. This wasn't my first instance, but hopefully it will be my last. So, this is the tale of the eternal packet, or should I say _an_ eternal packet.. May it hopefully help some weary Googler in the future.
@@ -61,8 +62,7 @@ Yep, that's about 24GB _per second_ over the course of one minute and five minut
 
 The key to answering this question lies in the design of the network surrounding the firewall having the issues. We have what I would call a "VPN Enclave" in this scenario. We have the requirement for a few firewalls to terminate site to site VPNs and then a pair for remote access VPNs (which is the firewall having CPU issues). Behind these firewalls sit _yet another_ firewall that acts as an aggregator for the VPN firewalls in order to simplify management, as well as because the other firewalls could be managed externally and the aggregate gives a single point of single-owned management. This may be overkill, but let's not talk about that here, as this is a "the powers that be have spoken" kind of situation.
 
-[![](https://www.somewolfe.com/wp-content/uploads/2017/09/VPN-Enclave-no-route-text-e1505221733608.png)
-](https://www.somewolfe.com/wp-content/uploads/2017/09/VPN-Enclave-no-route-text-e1505221733608.png)
+{{< smallimg src="/images/VPN-Enclave-no-route-text.png" alt="Overview Diagram" width="70%" >}}
 
 The problem ultimately was due to a routing loop that occurred when traffic was destined for an IP address of a VPN client that is no longer connected. When a VPN client connects, the assigned IP address gets injected as a static /32 route into the routing table. The following output shows this (as these are not configured static routes):
 
@@ -71,13 +71,12 @@ The problem ultimately was due to a routing loop that occurred when traffic was 
     S        10.100.0.11 255.255.255.255 [1/0] via 22.22.22.1, outside
 
 When the clients were connected, the routing would look like this:
-[![](https://www.somewolfe.com/wp-content/uploads/2017/09/VPN-Enclave-injected-outside-routes-e1505221874752.png)
-](https://www.somewolfe.com/wp-content/uploads/2017/09/VPN-Enclave-injected-outside-routes.png)
+
+{{< smallimg src="/images/VPN-Enclave-injected-outside-routes.png" alt="Diagram VPN, Injected Outside Routes" width="70%" >}}
 
 The VPN pools were not explicitly specified to route outside via a static route, and when they are connected this isn't a problem as the longest prefix match (the /32) would be used. Otherwise, the 10.0.0.0/8 inside route would be preferred as it envelopes the default route. With no VPN routes connected, routing would look like this:
 
-[![](https://www.somewolfe.com/wp-content/uploads/2017/09/VPN-Enclave-no-outside-routes-e1505221863473.png)
-](https://www.somewolfe.com/wp-content/uploads/2017/09/VPN-Enclave-no-outside-routes-e1505221863473.png)
+{{< smallimg src="/images/VPN-Enclave-no-outside-routes.png" alt="Diagram VPN, No Outside Routes" width="70%" >}}
 
 Of course, you're probably thinking, "What's the big deal? Disconnected clients obviously don't send traffic.." Well, right you are; however, apparently these clients would send a steady stream of NetBIOS, amongst other things, that would fire off right before disconnecting. So, the RAVPN firewall would route the traffic inside towards datacenter/campus resources. The aggregate firewall would then route the return traffic outside to the RAVPN firewall for VPN subnets, but now the client is disconnected and the RAVPN firewall would look at its routing table and match the inside supernet because the originating client is, despite originally having a route injected for the outside by the VPN process, is no longer connected. This would route the traffic back to the aggregate firewall. It would, of course, route it right back.
 
@@ -85,7 +84,6 @@ Now, this may not normally be a problem because eventually the packet will bounc
 
 The lesson here -- long story short -- is to hard code static routes for your VPN pool subnets to go out of the outside interface. This will prevent any inclusive supernets routing out of other interfaces from wreaking havoc like in my situation. The concluding routing would look like this, with a "floating static route" of sorts to catch the VPN traffic when some of that lingering traffic is returning.
 
-[![](https://www.somewolfe.com/wp-content/uploads/2017/09/VPN-Enclave-static-outside-route-e1505221853712.png)
-](https://www.somewolfe.com/wp-content/uploads/2017/09/VPN-Enclave-static-outside-route-e1505221853712.png)
+{{< smallimg src="/images/VPN-Enclave-static-outside.png" alt="Static Outside Routes" width="70%" >}}
 
 You may be using VPN pools that aren't from your inside network's ranges, and that would prevent something like this from happening as long as the default outside route catches the traffic. As a rule of thumb, though, always remember to hardcode that static route, as it is generally a good thing to do to prevent unforeseen issues.. especially in this situation.

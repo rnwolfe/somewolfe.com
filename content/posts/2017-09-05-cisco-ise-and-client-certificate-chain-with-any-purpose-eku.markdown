@@ -6,16 +6,16 @@ title: Cisco ISE and Client Certificate Chain with Any Purpose EKU
 type: post
 url: /2017/09/05/cisco-ise-and-client-certificate-chain-with-any-purpose-eku/
 categories:
-- Cisco ISE
-- Troubleshooting
+  - Cisco ISE
+  - Troubleshooting
 tags:
-- authentication
-- certificates
-- Cisco ISE
-- EAP
-- TLS
-- troubleshooting
-- x509v3
+  - authentication
+  - certificates
+  - Cisco ISE
+  - EAP
+  - TLS
+  - troubleshooting
+  - x509v3
 ---
 
 I recently came across quite an interesting issue during a Cisco ISE implementation using EAP-TLS. This was using EAP-FAST to perform EAP Chaining using the Cisco AnyConnect NAM module; however, the inner method was EAP-TLS and that’s where the problem resided. My authentication was failing due to “unsupported certificate in client certificate chain.”
@@ -36,16 +36,14 @@ The only purpose I can see where “Any Purpose” would make itself into a CA c
 
 To validate this, I created a new three-tier PKI. The Offline Root CA was used to issue an Issuing CA and neither of those certificates had any EKU and used the standard templates in a Microsoft PKI. I then issued a Test Subordinate CA from the Issuing CA that contained the “Any Purpose” EKU. This chain can be seen below:
 
-[![Test PKI Path](https://www.somewolfe.com/wp-content/uploads/2017/09/Path-300x84.png)
-](https://www.somewolfe.com/wp-content/uploads/2017/09/Path.png)
+{{< smallimg src="/images/ise-eku-cert-chain.png" alt="Test PKI Path" >}}
 
 You can see the EKU of the Test Subordinate CA contains the "Any Purpose" EKU:
 
-[![Test Sub EKU](https://www.somewolfe.com/wp-content/uploads/2017/09/Test-Sub-EKU-242x300.png)
-](https://www.somewolfe.com/wp-content/uploads/2017/09/Test-Sub-EKU.png)
+{{< smallimg src="/images/ise-eku-test-sub.png" alt="Test Sub EKU"  width="70%">}}
 
 I attempted an EAP-TLS authentication using the Test Subordinate CA and received a failure due to the unsupported certificate. I then re-issued a certificate from the standard Issuing CA and the authentication was the same. The only difference between the two scenarios was the use of the “Any Purpose” EKU.
 
 There is an ongoing TAC case exploring whether this should be a bug or is expected behavior. It is currently pending the Cisco ISE Business Unit’s input. I will update this post when more information is provided.
 
-Update on 10/11/2017: A bug has been opened for this "documentation" bug -[CSCvg10726](https://bst.cloudapps.cisco.com/bugsearch/bug/CSCvg10726). The developers provided input to the TAC case that states that this is expected behavior. This suggests there will be no change to this in the future, so keep an eye out for this EKU in CAs being used in client authentications or when building new CAs for client authentications.
+**Update on 10/11/2017**: A bug has been opened for this "documentation" bug - [CSCvg10726](https://bst.cloudapps.cisco.com/bugsearch/bug/CSCvg10726). The developers provided input to the TAC case that states that this is expected behavior. This suggests there will be no change to this in the future, so keep an eye out for this EKU in CAs being used in client authentications or when building new CAs for client authentications.
