@@ -9,6 +9,7 @@ install:
 
 before_script:
   - rm -rf public 2> /dev/null
+  - hugo version
 
 script:
   - hugo
@@ -16,6 +17,7 @@ script:
   - pwd
 
 deploy:
+  skip_cleanup: true
   provider: firebase
   token:
     secure: 'KG/B+kWRS01JX04NcV+67SwgOzToJ/J6tiVnJRHrVE/ETf+FFdIZNyS6RxXlJnas7pYHHltMhRGPBnp8Ih9i3/WLuNzG9g9vBvJAtrQjaPAp1bxS49rkYCROvhoC55yiQD+2+MGqy4MxfMpYdvOUrjhiHJ+Ryp/MaebK/0sOTYRnSFyU72L+Naw12xVKczabkVLQQ4nbZWlnozjiNN6s4MYqA5h9ZNVDIw47wokXQsAz16T061Se+e0tfqXBavQrnJfZA9nHZluwfnehgGJNTreqGop48g4Kf1ur5IyfVOg0rYSQszQqWcgSF6LmO6MvVx7xYA5ktcem4qf31YI7mKmSV2c5t8DK3X8CfGcuImBYRHMp+sNFvC+ZQh/QGYVzwyqN/nQvZKWuqdXKl8NM+7dCU3RpdgX64byOLJxBGpsQ3NwW4fhv7r/e8I9hUySTZ3b1DnBeJ+SFVTr2zcZDbk8BZKEBhyfSoA5f4ljkAGvrhRJ69qIFvqM2knoGXthE3fCSsvFFeqSOPhBHEreAwWkQDAA+EjzDfs6B/g7DJoMTxqiNEmqi/YvcljQycQOU3Z5+2q3MEXxSv2CGGpmzH3iNGF810G1nGInjwEvZK6as2IK9pEoFQvzzL+EumR+P2yIhJm+IDbdHs9HcmuSC0mEd/pp8Kke4vqFLs5Q+5r0='
