@@ -12,6 +12,8 @@ before_script:
 
 script:
   - hugo
+  - ls -la
+  - pwd
 
 deploy:
   provider: firebase
