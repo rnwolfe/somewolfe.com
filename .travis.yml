@@ -13,8 +13,6 @@ before_script:
 
 script:
   - hugo
-  - ls -la
-  - pwd
 
 deploy:
   skip_cleanup: true
