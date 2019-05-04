@@ -35,7 +35,7 @@ The anycast concept I will not spend more time going into, but is an interesting
 
 The first thing we will need to do is enable BGP on the appropriate routing domain on the F5 LTM. This is done in the LTM GUI. On the **Main** tab, click **Network > Route Domains**. This will bring you to the configured route domain (which may be only the default of 0). Under **Dynamic Routing Protocols** you will see a list of Available and Enabled protocols. Move the desired routing protocol from **Available** to **Enabled** and click **Update**. In this example, we're using BGP. This will enable the overall routing daemon on the LTM, as well as the individual BGP routing protocol daemon.
 
-<blockquote>**Note: **If you have Port Lockdown configured on the Self IP you will be using to develop neighbor relationships, you will need to allow the needed port (e.g. TCP/179 for BGP).</blockquote>
+<blockquote>**Note:** If you have Port Lockdown configured on the Self IP you will be using to develop neighbor relationships, you will need to allow the needed port (e.g. TCP/179 for BGP).</blockquote>
 
 #### **Verify the routing daemon is now running and BGP is enabled**
 
@@ -43,7 +43,7 @@ In order to perform these steps, you will need to access the TMSH CLI of your LT
 
 The following output confirms that the BGP protocol was enabled for the route domain.
 
-<blockquote>**Note: **If using a non-default routing domain, replace the 0 with "-r [ID]" in the following command.</blockquote>
+<blockquote>**Note:** If using a non-default routing domain, replace the 0 with "-r [ID]" in the following command.</blockquote>
 
     root@(bigip)(cfg-sync Standalone)(Active)(/Common)(tmos)# list /net route-domain 0
     net route-domain 0 {
@@ -73,7 +73,7 @@ In order to access the shell, run the following command.
 
     run /util imish
 
-<blockquote>**Note: **add "-r [ID]" if using a non-default routing domain.</blockquote>
+<blockquote>**Note:** add "-r [ID]" if using a non-default routing domain.</blockquote>
 
 Once in the shell, we will use IOS style syntax to configure BGP. This example will keep things quite simple.
 
@@ -188,7 +188,7 @@ After that is enabled, you can now see virtual server addresses in the IMI shell
 
 Great! We now see it in our LTM routing table, and we can see it is injected as a "kernel" route. Unfortunately, we will not yet see it in our router's routing table.
 
-<blockquote>**Note: **This feature is also called Route Health Injection (RHI).</blockquote>
+<blockquote>**Note:** This feature is also called Route Health Injection (RHI).</blockquote>
 
 #### Configure kernel route redistribution
 
