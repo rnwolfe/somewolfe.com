@@ -1,5 +1,5 @@
 baseURL = "https://rwolfe.io/"
 languageCode = "en-us"
-title = "Ryan Wolfe"
+title = "rwolfe.io"
 theme = "aether"
 enableGitInfo = true
