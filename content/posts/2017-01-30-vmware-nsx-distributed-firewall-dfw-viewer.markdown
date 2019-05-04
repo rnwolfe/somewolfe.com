@@ -5,6 +5,7 @@ draft: false
 title: VMware NSX Distributed Firewall (DFW) Viewer
 type: post
 url: /2017/01/30/vmware-nsx-distributed-firewall-dfw-viewer/
+featuredImage: /images/nsx-viewer-snapshot.png
 categories:
   - Development
   - VMware NSX

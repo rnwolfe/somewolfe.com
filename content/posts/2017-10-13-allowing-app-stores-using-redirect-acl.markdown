@@ -63,7 +63,8 @@ Continuing with the DNS-based ACL for redirect during MDM on-boarding, I found t
   - albert.apple.com
   - gs.apple.com
   - itunes.apple.com
-  - ax.itunes.apple.com - www.apple.com
+  - ax.itunes.apple.com
+  - www.apple.com
 
 The IPs could use a bit further explanation. I started with just the URLs and had partial success (apple.com would load with stripped styling, and the app store still didn't work). So, I did some digging into the DNS of apple.com to find that it was served by a Akamai Edge CDN. I tried being a bit more restrictive, but ended up using the /8 that all of the IPs belonged to: 23.0.0.0/8. I did identify that this allowed some other sites that are served by the Akamai CDN. I noticed www.cisco.com and usaa.com we also permitted. I will look to do more restrictive ranges, if possible, in the future. But, for now, this suits my requirements as the WLAN itself is still authenticated. It is restrictive enough to prevent users from using the network for bandwidth intensive purposes (music, video, etc.). The 65.158.0.0/16 was added because I saw requests being dropped in the network while the App Store was suffering from crippled functionality. I attempted to find an FQDN that could be permitted, but the reverse lookups gave nothing and I was stuck with this range for now.
 
@@ -100,11 +101,15 @@ With the above filters in place for the redirect ACL, I did some testing on an i
   - iMessage
   - Google Maps
   - Google Hangouts
-  - Gmail (Partially) - Native Mail App to Gmail Account successfully sent mail - Google Inbox on iOS could not send mail. - Google Drive file access
+  - Gmail (Partially)
+    - Native Mail App to Gmail Account successfully sent mail
+    - Google Inbox on iOS could not send mail.
+  - Google Drive file access
 
 - Apps that were not permitted:
   - YouTube (a video list was retrieved, but no ads, thumbnails, or actual videos were shown or played).
-  - Google Duo - Apple FaceTime
+  - Google Duo
+  - Apple FaceTime
 
 ### Last but not least
 

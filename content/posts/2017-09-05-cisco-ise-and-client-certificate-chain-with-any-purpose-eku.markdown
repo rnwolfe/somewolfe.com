@@ -5,6 +5,7 @@ draft: false
 title: Cisco ISE and Client Certificate Chain with Any Purpose EKU
 type: post
 url: /2017/09/05/cisco-ise-and-client-certificate-chain-with-any-purpose-eku/
+featuredImage: /images/ise-eku-test-sub.png
 categories:
   - Cisco ISE
   - Troubleshooting
