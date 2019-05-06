@@ -3,3 +3,4 @@ languageCode = "en-us"
 title = "rwolfe.io"
 theme = "aether"
 enableGitInfo = true
+googleAnalytics="UA-139652210-1"
