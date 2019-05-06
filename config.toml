@@ -3,4 +3,27 @@ languageCode = "en-us"
 title = "rwolfe.io"
 theme = "aether"
 enableGitInfo = true
-googleAnalytics="UA-139652210-1"
+googleAnalytics = "UA-139652210-1"
+
+# GDPR Settings
+[privacy]
+  [privacy.disqus]
+    disable = true
+  [privacy.googleAnalytics]
+    anonymizeIP = true
+    disable = false
+    respectDoNotTrack = true
+    useSessionStorage = false
+  [privacy.instagram]
+    disable = false
+    simple = true
+  [privacy.twitter]
+    disable = false
+    enableDNT = true
+    simple = false
+  [privacy.vimeo]
+    disable = false
+    simple = false
+  [privacy.youtube]
+    disable = false
+    privacyEnhanced = true
